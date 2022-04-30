@@ -1,3 +1,4 @@
 TITLE,STATUS,WHO,SINCE
-BOOK1,Available,-,13/04/2022
-BOOK2,Unavailable,Person 2,-
+BOOK1,Available,-,-
+BOOK2,Unavailable,Person2,14/02/2022
+BOOK3,Available,-,

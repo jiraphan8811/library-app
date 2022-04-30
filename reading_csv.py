@@ -1,21 +1,28 @@
-import pandas
-df = pandas.read_csv('library.csv')
-print(df)
+import csv
+import panda
 
+reader = csv.reader(open('library.csv'))
 
-# # print(type(df['Book name'][0]))
-# import csv
+result = {}
+for row in reader:
+    key = row[0]
+    if key in result:
+        # implement your duplicate row handling here
+        pass
+    result[key] = row[1:]
+print(result)
+print(result['BOOK2'][0])
 
-# with open('library.csv') as csv_file:
-#     csv_reader = csv.reader(csv_file, delimiter=',')
-#     line_count = 0
-#     for row in csv_reader:
-#         if line_count == 0:
-#             print(row)
-#             # print(f'Column names are {", ".join(row)}')
-#             line_count += 1
-#         else:
-#             print(row)
-#             line_count += 1
-#     print(f'Processed {line_count} lines.')
-#     print(type(csv_reader))
+    # with open('library_out.csv', 'w', newline='') as f:
+    #     writer = csv.writer(f)
+    #     writer.writerows(lines)
+        
+# with open('library_out.csv', 'w', newline='') as csv_file:  
+#     writer = csv.writer(csv_file)
+#     writer.writerow(result.keys())
+#     writer.writerows(zip(*result.values()))
+#     # for key, value in result.items():
+#     #    writer.writerow([key, value])
+
+df = pd.DataFrame({key: pd.Series(value) for key, value in dictmap.items()})
+df.to_csv(library_out.csv, encoding='utf-8', index=False)
