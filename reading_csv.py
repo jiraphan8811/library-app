@@ -1,6 +1,7 @@
 import csv
-import panda
+import pandas as pd
 
+# Reading from csv and turn data into dictionary
 reader = csv.reader(open('library.csv'))
 
 result = {}
@@ -24,5 +25,6 @@ print(result['BOOK2'][0])
 #     # for key, value in result.items():
 #     #    writer.writerow([key, value])
 
-df = pd.DataFrame({key: pd.Series(value) for key, value in dictmap.items()})
-df.to_csv(library_out.csv, encoding='utf-8', index=False)
+df = pd.DataFrame({key: pd.Series(value) for key, value in result.items()})
+df2 = df.T
+df2.to_csv('library_out.csv', encoding='utf-8', index=True)
