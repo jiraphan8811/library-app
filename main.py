@@ -1,34 +1,21 @@
-from Library import *
 import justpy as jp
+import pandas as pd
 
+# Load data showing percent of women in different majors per year
+wm_df = pd.read_csv('library.csv').round(2)
+wm_df_search = wm_df.set_index('CODE')
 
+headers = list(wm_df.columns)
+table_data = wm_df.to_numpy().tolist()
+table_data.insert(0, headers)
 
-def main():            
-      library=Library(["The Last Battle","The Screwtape letters","The Great Divorce"])
-      student=Student()
-      done=False
-      while done==False:
-            print(""" ======LIBRARY MENU=======
-                  1. Display all available books
-                  2. Request a book
-                  3. Return a book
-                  4. Exit
-                  """)
-            choice=int(input("Enter Choice:"))
-            if choice==1:
-                        library.displayAvailablebooks()
-            elif choice==2:
-                        library.lendBook(student.requestBook())
-            elif choice==3:
-                        library.addBook(student.returnBook())
-            elif choice==4:
-                  sys.exit()
+try:
+      for i, (code,title,status,who,since) in enumerate(table_data):
+            if code == 'ETH01':
+                  print(table_data[i])
+                  break
+except:
+      print('Wrong code')
 
-                  
-                  
-def hello_world():
-    wp = jp.WebPage()
-    p = jp.P(text='Hello World!', a=wp)
-    return wp
-
-jp.justpy(hello_world)
+            
+# print(table_data[1:][0])

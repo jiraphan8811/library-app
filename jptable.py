@@ -1,19 +1,21 @@
 import justpy as jp
 import pandas as pd
 
-# Load data showing percent of women in different majors per year
-wm_df = pd.read_csv('library.csv').round(2)
-wm_df['TITLE'] = wm_df['TITLE'].astype('str')
-headers = list(wm_df.columns)
-table_data = wm_df.to_numpy().tolist()
-table_data.insert(0, headers)
-
+wm_df = pd.read_csv('https://elimintz.github.io/women_majors.csv').round(2)
 
 def grid_test():
     wp = jp.WebPage()
-    d = jp.Div(classes='w-7/8 m-2 p-3 border rounded-lg ', a=wp)
-    wm_df.jp.ag_grid(a=d)  # a=wp adds the grid to WebPage wp
-    
+    grid = wm_df.jp.ag_grid(a=wp)
+    grid.options.pagination = True
+    grid.options.paginationAutoPageSize = True
+    grid.options.columnDefs[0].cellClass = ['text-white', 'bg-blue-500', 'hover:bg-blue-200']
+    for col_def in grid.options.columnDefs[1:]:
+        col_def.cellClassRules = {
+            'font-bold': 'x < 20',
+            'bg-red-300': 'x < 20',
+            'bg-yellow-300': 'x >= 20 && x < 50',
+            'bg-green-300': 'x >= 50'
+        }
     return wp
 
 jp.justpy(grid_test)

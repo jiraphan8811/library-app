@@ -21,7 +21,7 @@ def main():
 
     print(data)
 
-    for i, (title,status,who,since) in enumerate(data):
+    for i, (code,title,status,who,since) in enumerate(data):
         if title == search_string:
             data[i][1] = 'Available'
             data[i][2] = '-'
@@ -36,13 +36,15 @@ def main():
     return data
 # main()
 data = main()
-def home(data):
-    wp = jp.WebPage()
-    wp.add(jp.P(text='ANCA Library', classes='text-lg m-4'))
-    wp.add(jp.P(text='Book Title: ', classes='text-base m-4'))
-    for i in data:
-        wp.add(jp.P(text=))
 
-    return wp
+# def home():
+#     wp = jp.WebPage()
+#     wp.add(jp.P(text='ANCA Library', classes='text-lg m-4'))
+#     wp.add(jp.P(text='Book Title: ', classes='text-base m-4'))
 
-jp.justpy(home)
+#     for i in data:
+#         wp.add(jp.P(text=data[i][:]))
+
+#     return wp
+
+# jp.justpy(home)
