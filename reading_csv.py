@@ -1,30 +1,48 @@
 import csv
 import pandas as pd
+import justpy as jp
 
-# Reading from csv and turn data into dictionary
-reader = csv.reader(open('library.csv'))
 
-result = {}
-for row in reader:
-    key = row[0]
-    if key in result:
-        # implement your duplicate row handling here
-        pass
-    result[key] = row[1:]
-print(result)
-print(result['BOOK2'][0])
 
-    # with open('library_out.csv', 'w', newline='') as f:
-    #     writer = csv.writer(f)
-    #     writer.writerows(lines)
-        
-# with open('library_out.csv', 'w', newline='') as csv_file:  
-#     writer = csv.writer(csv_file)
-#     writer.writerow(result.keys())
-#     writer.writerows(zip(*result.values()))
-#     # for key, value in result.items():
-#     #    writer.writerow([key, value])
+def readcsv(filename):
+    with open(filename, newline='') as f:
+        reader = csv.reader(f)
+        data = list(reader)
+        return data
 
-df = pd.DataFrame({key: pd.Series(value) for key, value in result.items()})
-df2 = df.T
-df2.to_csv('library_out.csv', encoding='utf-8', index=True)
+def writecsv(filename,data):
+    with open(filename, 'w', newline='') as f:
+        writer = csv.writer(f)
+        writer.writerows(data)
+
+def main():
+    search_string = "BOOK2"   
+    data = readcsv('library.csv')
+
+    print(data)
+
+    for i, (title,status,who,since) in enumerate(data):
+        if title == search_string:
+            data[i][1] = 'Available'
+            data[i][2] = '-'
+            data[i][3] = '-'
+
+
+    extracted_list = [list for lis in data for list in lis if search_string in lis]
+    print(extracted_list)
+    # print('BOOK2' in [j for i in data for j in i]) #Check if 'BOOK2' is in the list
+
+    writecsv('library_out.csv',data)
+    return data
+# main()
+data = main()
+def home(data):
+    wp = jp.WebPage()
+    wp.add(jp.P(text='ANCA Library', classes='text-lg m-4'))
+    wp.add(jp.P(text='Book Title: ', classes='text-base m-4'))
+    for i in data:
+        wp.add(jp.P(text=))
+
+    return wp
+
+jp.justpy(home)

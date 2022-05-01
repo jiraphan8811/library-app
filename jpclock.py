@@ -33,7 +33,7 @@ class AutoTable(jp.Table):
                     jp.Td(text=item, classes=self.td_classes, a=tr)
 
 
-wm_df = pd.read_csv('library.csv').round(2)
+wm_df = pd.read_csv('https://raw.githubusercontent.com/jiraphan8811/library-app/main/library.csv').round(2)
 wm_df['TITLE'] = wm_df['TITLE'].astype('str')
 headers = list(wm_df.columns)
 table_data = wm_df.to_numpy().tolist()
