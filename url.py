@@ -1,6 +1,7 @@
 from logging import exception
 import justpy as jp
 from main import *
+import csv
 
 button_classes='m-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 rounded w-56 text-center'
 session_data = {}
@@ -24,6 +25,11 @@ def submit_form(self, msg):
         print(d["value"])
     # print(msg.form_data)
 
+
+def writecsv(filename,data):
+    with open(filename, 'w', newline='') as f:
+        writer = csv.writer(f)
+        writer.writerows(data)
 
 
 def bookView(request):
