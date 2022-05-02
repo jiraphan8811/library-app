@@ -1,47 +1,66 @@
 import justpy as jp
-button_classes = 'bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded m-2'
-input_classes = 'border m-2 p-2'
 
-session_data = {}
+alert_dialog_html = """
+<div class="q-pa-md q-gutter-sm">
+    <q-btn label="Alert" color="primary" name="alert_button" />
+    <q-dialog name="alert_dialog" persistent>
+      <q-card>
+        <q-card-section>
+          <div class="text-h6">Alert</div>
+        </q-card-section>
 
-def form_test():
-    wp = jp.WebPage()
-    wp.display_url = '/fill_form'
+        <q-card-section>
+          Please enter your name
+        </q-card-section>
 
-    form1 = jp.Form(a=wp, classes='border m-1 p-1 w-64')
+        <q-card-actions align="right">
+          <q-btn flat label="OK" color="primary" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+</div>
+"""
 
-    user_label = jp.Label(text='User Name', classes='block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2', a=form1)
-    in1 = jp.Input(placeholder='User Name', a=form1, classes='form-input')
-    user_label.for_component = in1
+seamless_dialog_html = """
+<div class="q-pa-md q-gutter-sm">
+    <q-btn label="Open seamless Dialog" color="primary" name="seamless_button" />
 
-    password_label = jp.Label(classes='block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2 mt-2', a=form1)
-    jp.Div(text='Password', classes='block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2', a=password_label)
-    jp.Input(placeholder='Password', a=password_label, classes='form-input', type='password')
+    <q-dialog seamless position="bottom" name="seamless_dialog">
+      <q-card style="width: 350px">
+        <q-linear-progress :value="0.6" color="pink" />
 
-    check_label = jp.Label(classes='text-sm block', a=form1)
-    jp.Input(type='checkbox', a=check_label, classes='form-checkbox text-blue-500')
-    jp.Span(text='Send me stuff', a=check_label, classes= 'ml-2')
-    submit_button = jp.Input(value='Submit Form', type='submit', a=form1, classes=button_classes)
+        <q-card-section class="row items-center no-wrap">
+          <div>
+            <div class="text-weight-bold">The Walker</div>
+            <div class="text-grey">Fitz & The Tantrums</div>
+          </div>
 
-    def submit_form(self, msg):
-        print(msg)
-        msg.page.redirect = '/form_submitted'
-        session_data[msg.session_id] = msg.form_data
+          <q-space />
 
-    form1.on('submit', submit_form)
+          <q-btn flat round icon="play_arrow" />
+          <q-btn flat round icon="pause" />
+          <q-btn flat round icon="close" v-close-popup />
+        </q-card-section>
+      </q-card>
+    </q-dialog>
+  </div>
+"""
+
+
+def open_dialog(self, msg):
+    self.dialog.value = True
+
+def dialog_test():
+    wp = jp.QuasarPage()
+
+    c = jp.parse_html(alert_dialog_html, a=wp)
+    c.name_dict["alert_button"].dialog = c.name_dict["alert_dialog"]
+    c.name_dict["alert_button"].on('click', open_dialog)
+
+    c = jp.parse_html(seamless_dialog_html, a=wp)
+    c.name_dict["seamless_button"].dialog = c.name_dict["seamless_dialog"]
+    c.name_dict["seamless_button"].on('click', open_dialog)
 
     return wp
 
-@jp.SetRoute('/form_submitted')
-def form_submitted(request):
-    wp = jp.WebPage()
-    wp.display_url = '/thanks'
-    jp.Div(text='Thank you for submitting the form', a=wp, classes='text-xl m-2 p-2')
-    for field in session_data[request.session_id]:
-        if field.type in ['text', 'password']:
-            jp.Div(text=f'{field.placeholder}:  {field.value}', a=wp, classes='text-lg m-1 p-1')
-        elif field.type == 'checkbox' and field.checked:
-            jp.Div(text='We will send you stuff', a=wp, classes='text-lg m-1 p-1')
-    return wp
-
-jp.justpy(form_test)
+jp.justpy(dialog_test)

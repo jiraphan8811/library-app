@@ -1,10 +1,21 @@
 from logging import exception
+from datetime import datetime
 import justpy as jp
-from main import *
 import csv
+import pandas as pd
 
-button_classes='m-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 rounded w-56 text-center'
+wm_df = pd.read_csv('library.csv').round(2)
+wm_df_search = wm_df.set_index('CODE')
+
+headers = list(wm_df.columns)
+table_data = wm_df.to_numpy().tolist()
+table_data.insert(0, headers)
+
 session_data = {}
+
+def open_dialog(self, msg):
+    self.dialog.value = True
+
 
 def index():
     wp = jp.WebPage()
@@ -17,14 +28,6 @@ def index():
 
     return wp
 
-def submit_form(self, msg):
-    # print(msg)
-    msg.page.redirect = '/'
-    session_data[msg.session_id] = msg.form_data
-    for d in msg.form_data:
-        print(d["value"])
-    # print(msg.form_data)
-
 
 def writecsv(filename,data):
     with open(filename, 'w', newline='') as f:
@@ -36,37 +39,60 @@ def bookView(request):
     wp = jp.WebPage()
     url = request.path_params["code"].upper()
     loadcount = 0
+    n = 0
+    
+
+    def submit_form(self, msg):
+                session_data[msg.session_id] = msg.form_data
+                for d in msg.form_data:
+                    print(d["value"])
+                    user = d["value"]
+                    if user == '':
+                        pass
+                    elif user == 'Click to Return':
+                        msg.page.redirect = '/'
+                        table_data[n][2] = 'Available'
+                        table_data[n][3] = '-'
+                        table_data[n][4] = '-'
+                    else:
+                        msg.page.redirect = '/'    
+                        table_data[n][2] = 'Unavailable'
+                        table_data[n][3] = user
+                        table_data[n][4] = datetime.now().strftime('%d/%m/%Y')
+                    break
+                print(table_data[n])
+                writecsv('library.csv',table_data)
+
+                
     for i, (code,title,status,who,since) in enumerate(table_data):
+        # print(i)
         if code == url:
+
+            #Render HTML Components
             wp.add(jp.P(text=f'Book Title: {table_data[i][1]}', classes='text-base m-2 font-bold'))
             wp.add(jp.P(text=f'Book Code: {table_data[i][0]}', classes='text-base m-2'))
             wp.add(jp.P(text=f'Status: {table_data[i][2]}', classes='text-base m-2'))
             wp.add(jp.P(text=f'Checked out by: {table_data[i][3]}', classes='text-base m-2'))
             wp.add(jp.P(text=f'Since: {table_data[i][4]}', classes='text-base m-2'))
             wp.add(jp.Br())
-
             form1 = jp.Form(a=wp, classes='border m-1 p-1 w-72')
-            user_label = jp.Label(text='Enter your name before clicking button', classes='block uppercase tracking-wide text-gray-700 text-xs mb-2', a=form1)
-            in1 = jp.Input(placeholder='Enter your name', a=form1, classes='form-input')
-            # user_label.for_component = in1
-
-            submit_button = jp.Input(value='Click to Borrow', type='submit', a=form1, classes=button_classes)
+            if table_data[i][2] == 'Available':
+                
+                user_label = jp.Label(text='Enter your name before clicking button', classes='m-2 block uppercase tracking-wide text-gray-700 text-xs mb-2', a=form1)
+                in1 = jp.Input(placeholder='Enter your name', a=form1, classes='form-input m-2 w-56')
+                submit_button = jp.Input(value='Click to Borrow', type='submit', a=form1, classes='m-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 rounded w-56 text-center')
+            else:
+                
+                submit_button2 = jp.Input(value='Click to Return', type='submit', a=form1, classes='m-2 bg-red-500 hover:bg-red-700 text-white font-bold py-2 rounded w-56 text-center')
             loadcount +=1
+            #Transfer index from enumerate to use in submit_form method
+            n = i
             form1.on('submit', submit_form)
 
-            print(session_data)
-            
-            # table_data[i][2] = 'Unavailable'
-            # table_data[i][3] = user
-
-
-            # break
-    
     if loadcount == 0:
-        wp.add(jp.P(text='NO URL!', classes='text-5xl m-2'))
+        wp.add(jp.P(text='NO URL!', classes='text-2xl m-2'))
     wp.add(jp.A(text='Book list', href='/', classes='m-2 text-base text-blue-600 underline'))
     return wp
-
 
 jp.Route('/{code}', bookView)
 jp.Route('/', index)
