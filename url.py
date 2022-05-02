@@ -4,20 +4,25 @@ import justpy as jp
 import csv
 import pandas as pd
 
-wm_df = pd.read_csv('library.csv').round(2)
-wm_df_search = wm_df.set_index('CODE')
-
-headers = list(wm_df.columns)
-table_data = wm_df.to_numpy().tolist()
-table_data.insert(0, headers)
-
 session_data = {}
+
+
+def read_file(filename):
+    wm_df = pd.read_csv(filename).round(2)
+    wm_df_search = wm_df.set_index('CODE')
+
+    return wm_df
+
 
 def open_dialog(self, msg):
     self.dialog.value = True
 
 
 def index():
+    wm_df = read_file('library.csv')
+    headers = list(wm_df.columns)
+    table_data = wm_df.to_numpy().tolist()
+    table_data.insert(0, headers)
     wp = jp.WebPage()
     wp.add(jp.P(text='Welcome to ANCA Library', classes='text-2xl m-4 text-decoration-line: underline font-weight: 700'))
     wp.add(jp.P(text='Below is the list of all the books we have. Please scan the qr code on the book or type /CODE in the url to borrow the book outside the department.', classes='text-base m-4'))
@@ -36,6 +41,10 @@ def writecsv(filename,data):
 
 
 def bookView(request):
+    wm_df = read_file('library.csv')
+    headers = list(wm_df.columns)
+    table_data = wm_df.to_numpy().tolist()
+    table_data.insert(0, headers)
     wp = jp.WebPage()
     url = request.path_params["code"].upper()
     loadcount = 0
