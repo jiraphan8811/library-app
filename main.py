@@ -62,7 +62,7 @@ def bookView(request):
                         msg.page.redirect = '/'
                         table_data[n][2] = 'Available'
                         table_data[n][3] = '-'
-                        table_data[n][4] = '-'
+                        table_data[n][4] = datetime.now().strftime('%d/%m/%Y')
                     else:
                         msg.page.redirect = '/'    
                         table_data[n][2] = 'Unavailable'
